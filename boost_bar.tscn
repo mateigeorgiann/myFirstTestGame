@@ -1,0 +1,26 @@
+[gd_scene load_steps=2 format=3 uid="uid://c2rmmrdma71bx"]
+
+[ext_resource type="Script" path="res://ProgressBar.gd" id="1_mml81"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="ProgressBar" type="ProgressBar" parent="."]
+layout_mode = 1
+anchors_preset = 7
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 0.5
+anchor_bottom = 1.0
+offset_left = -157.5
+offset_top = -47.0
+offset_right = 157.5
+grow_horizontal = 2
+grow_vertical = 0
+show_percentage = false
+script = ExtResource("1_mml81")

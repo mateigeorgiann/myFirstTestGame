@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://buamu0gni5080"]
+
+[ext_resource type="Script" path="res://booster.gd" id="1_00yat"]
+
+[node name="Node" type="Node"]
+script = ExtResource("1_00yat")
