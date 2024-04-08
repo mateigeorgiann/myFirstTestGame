@@ -51,8 +51,11 @@ func _on_mob_timer_timeout():
 	#i know its not the perfect randomiser, i would use smth based on seed
 	#maybe rewrite some algorithm but for such a small game i dont think its needed
 	var randomValue = randi_range(0,100)
+	print(randomValue," ", score)
 	
-	if randomValue<score :
+	# Currently you start with the 2nd type of enemies ^^ :-)
+	# However this is a good idea.
+	if randomValue>score :
 		#will spawn the new type which will go to 100 after score 100
 		#this is the 1st method that came to mind that i could code with my current knowledge
 		var mob = mob_scene.instantiate()
@@ -79,24 +82,8 @@ func _on_mob_timer_timeout():
 		mob2_spawn_location.progress_ratio = randf()
 		#chooses position
 		mob2.position = mob2_spawn_location.position
-		var player_position = $Player.position
-		#trying to get the coordonates of the player
-		var direction = (player_position - mob2.position).normalized()
-		var rotation_angle = atan2(direction.y, direction.x)
-		mob2.rotation_degrees = rotation_angle * deg_to_rad(1.0)
-		mob2.linear_velocity = direction.normalized() * 600 
-		#spawn mob
+		mob2.set_player($Player)
 		add_child(mob2)
-		await get_tree().create_timer(1.0).timeout
-		mob2.linear_velocity= direction.normalized() * 0
-		await get_tree().create_timer(1.0).timeout
-		direction = (player_position - mob2.position).normalized()
-		#here i realise i need to work on my trigonometry cause i didnt know why arc tan is used
-		#i inspired the code from many different forums, compiled them toghether to get a result
-		rotation_angle = atan2(direction.y,direction.x)
-		mob2.rotation_degrees = deg_to_rad(0.0)
-		mob2.rotation_degrees = rotation_angle * deg_to_rad(1.0)
-		mob2.linear_velocity = direction.normalized() * 1000
 		# HELP Here i have to see why after its instatieted i can only change speed and not rotation
 		#fix THIS 1
 

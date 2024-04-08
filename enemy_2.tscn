@@ -6,8 +6,7 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cu6jg"]
 size = Vector2(53, 57)
 
-[node name="enemy2" type="RigidBody2D"]
-gravity_scale = 0.0
+[node name="enemy2" type="CharacterBody2D"]
 script = ExtResource("1_c130m")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
