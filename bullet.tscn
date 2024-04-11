@@ -14,11 +14,7 @@ gravity_scale = 0.0
 script = ExtResource("1_nfb23")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-<<<<<<< HEAD
 position = Vector2(-3.8147e-07, 0.05)
-=======
-position = Vector2(2.38419e-08, -2.68221e-08)
->>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 shape = SubResource("RectangleShape2D_l3s8n")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
