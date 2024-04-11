@@ -1,5 +1,8 @@
 extends CharacterBody2D
+<<<<<<< HEAD
 class_name Player
+=======
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 
 signal hit
 signal boost_changed(new_boost)
@@ -28,6 +31,7 @@ func _process(delta):
 	if Input.is_action_pressed("move_down"):
 		velocity.y += 1
 		
+<<<<<<< HEAD
 	#if velocity is 1 usually , in both direction it would be 1.4 using pythagorian formula , so dividing by that
 	#when going diagonally it will work
 	if velocity.y != 0 and velocity.x != 0:
@@ -35,6 +39,8 @@ func _process(delta):
 		velocity.x = velocity.x / 1.4
 		
 		
+=======
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 	# a bit of reordering to make this slightly easier on the eyes.
 	# Also, you're currently recharding the booster before the game starts.
 	# What can you do about it?
@@ -47,6 +53,10 @@ func _process(delta):
 	else: 
 		if boost < max_boost:
 			boost=boost+ 8 * delta
+<<<<<<< HEAD
+=======
+
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 		speed=400
 		
 	# you basically want to update the boost every frame. 
@@ -77,6 +87,7 @@ func start(pos):
 
 
 func _on_hitbox_body_entered(body):
+<<<<<<< HEAD
 	
 	# What would happen if we removed this IF?
 	# How to make it so that the first type of the enemy kills you once again?
@@ -96,3 +107,11 @@ func _on_area_2d_body_entered(body):
 
 
 
+=======
+	# What would happen if we removed this IF?
+	# How to make it so that the first type of the enemy kills you once again?
+	if body is Enemy:
+		hide()
+		hit.emit()
+		$CollisionShape2D.set_deferred("disabled",true)
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9

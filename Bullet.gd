@@ -1,5 +1,9 @@
 extends RigidBody2D
+<<<<<<< HEAD
 class_name Bullet
+=======
+
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 signal kill
 var user
 

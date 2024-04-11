@@ -39,7 +39,10 @@ animations = [{
 }]
 
 [node name="Player" type="CharacterBody2D"]
+<<<<<<< HEAD
 collision_mask = 2
+=======
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 script = ExtResource("1_dp47n")
 
 [node name="hitbox" type="Area2D" parent="."]

@@ -6,9 +6,13 @@
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_cu6jg"]
 size = Vector2(53, 57)
 
+<<<<<<< HEAD
 [node name="enemy2" type="CharacterBody2D" groups=["enemies"]]
 collision_layer = 5
 collision_mask = 0
+=======
+[node name="enemy2" type="CharacterBody2D"]
+>>>>>>> 4713ecfa4c33cb0f702eb00cb5c85720bad37ef9
 script = ExtResource("1_c130m")
 
 [node name="VisibleOnScreenEnabler2D" type="VisibleOnScreenEnabler2D" parent="." groups=["enemies"]]
