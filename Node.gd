@@ -1,23 +1,30 @@
 extends Node
 
-
 @export var mob_scene: PackedScene
 @export var enemy_2_scene:PackedScene
 @export var bullet_scene:PackedScene
 
 var score
+var canAttack: bool =true
+var attackTimer: Timer
 # Called when the node enters the scene tree for the first time.
 func _ready():
 	var player = get_node("player")
 	$Player.boost_changed.connect(_on_boost_changed)
-
+	
 func _on_boost_changed(new_boost: int):
 	$HUD/ProgressBar.value= new_boost
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
-	if Input.is_action_pressed("click"):
+	
+	if Input.is_action_pressed("click") and canAttack == true :
+		canAttack = false
 		_on_mouse_click()
+	if $attackTimer.is_stopped() == true :
+		canAttack = true
+		$attackTimer.start(1.0)
+	#print("timer ",$attackTimer.)
 
 
 func game_over():
@@ -26,6 +33,10 @@ func game_over():
 	$HUD.show_game_over()
 	$BackgroundMusic.stop()
 	$DeathSound.play()
+	canAttack=false
+	#I dont understand why this is not deleting the enemies of the screen I tried a few other methods but I
+	#can't figure it out. I added the enemies to their group named "enemies"
+	get_tree().call_group("enemies","queue_free()")
 	
 func new_game():
 	score=0
@@ -33,7 +44,8 @@ func new_game():
 	$StartTimer.start()
 	$HUD.update_score(score)
 	$HUD.show_message("Get ready")
-	get_tree().call_group("mobs", "queue_free")
+	
+	#I wish to know how to connect the boost to this scene , I can't figured it out I ve searched and asked around :(
 	$BackgroundMusic.play()
 
 func _on_score_timer_timeout():
@@ -51,8 +63,11 @@ func _on_mob_timer_timeout():
 	#i know its not the perfect randomiser, i would use smth based on seed
 	#maybe rewrite some algorithm but for such a small game i dont think its needed
 	var randomValue = randi_range(0,100)
+	print(randomValue," ", score)
 	
-	if randomValue<score :
+	# Currently you start with the 2nd type of enemies ^^ :-)
+	# However this is a good idea.
+	if randomValue>score :
 		#will spawn the new type which will go to 100 after score 100
 		#this is the 1st method that came to mind that i could code with my current knowledge
 		var mob = mob_scene.instantiate()
@@ -79,24 +94,8 @@ func _on_mob_timer_timeout():
 		mob2_spawn_location.progress_ratio = randf()
 		#chooses position
 		mob2.position = mob2_spawn_location.position
-		var player_position = $Player.position
-		#trying to get the coordonates of the player
-		var direction = (player_position - mob2.position).normalized()
-		var rotation_angle = atan2(direction.y, direction.x)
-		mob2.rotation_degrees = rotation_angle * deg_to_rad(1.0)
-		mob2.linear_velocity = direction.normalized() * 600 
-		#spawn mob
+		mob2.set_player($Player)
 		add_child(mob2)
-		await get_tree().create_timer(1.0).timeout
-		mob2.linear_velocity= direction.normalized() * 0
-		await get_tree().create_timer(1.0).timeout
-		direction = (player_position - mob2.position).normalized()
-		#here i realise i need to work on my trigonometry cause i didnt know why arc tan is used
-		#i inspired the code from many different forums, compiled them toghether to get a result
-		rotation_angle = atan2(direction.y,direction.x)
-		mob2.rotation_degrees = deg_to_rad(0.0)
-		mob2.rotation_degrees = rotation_angle * deg_to_rad(1.0)
-		mob2.linear_velocity = direction.normalized() * 1000
 		# HELP Here i have to see why after its instatieted i can only change speed and not rotation
 		#fix THIS 1
 
@@ -108,7 +107,9 @@ func _on_mob_timer_timeout():
 #I did earlier with mob 2. After that its supposed to be given speed, but I didnt have time to fix all
 #the crashes.
 func _on_mouse_click():
+	
 	var bullet = bullet_scene.instantiate()
+	bullet.user = $Player
 	bullet.position = $Player.position
 	var mousePosition = get_viewport().get_mouse_position()
 	var direction = (mousePosition - bullet.position).normalized()
@@ -117,3 +118,4 @@ func _on_mouse_click():
 	bullet.linear_velocity = direction.normalized() * 500
 	add_child(bullet)
 	
+

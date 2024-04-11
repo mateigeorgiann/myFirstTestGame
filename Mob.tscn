@@ -48,22 +48,30 @@ animations = [{
 radius = 30.74
 height = 63.48
 
-[node name="mob" type="RigidBody2D" groups=["mobs"]]
+[node name="mob" type="RigidBody2D" groups=["enemies"]]
+collision_layer = 5
+collision_mask = 0
 gravity_scale = 0.0
 script = ExtResource("1_ll0nf")
 metadata/_edit_group_ = true
 
-[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
+[node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." groups=["enemies"]]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5i261")
 animation = &"walk"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visibility_layer = 0
-shape = SubResource("CapsuleShape2D_iuser")
-one_way_collision_margin = 0.0
-debug_color = Color(0.14902, 0.164706, 1, 0.419608)
-
-[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="."]
+[node name="VisibleOnScreenNotifier2D" type="VisibleOnScreenNotifier2D" parent="." groups=["enemies"]]
 position = Vector2(3, -1)
 scale = Vector2(2.2, 2.1)
+
+[node name="Area2D" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D" groups=["enemies"]]
+shape = SubResource("CapsuleShape2D_iuser")
+debug_color = Color(0.14902, 0.164706, 1, 0.419608)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." groups=["enemies"]]
+shape = SubResource("CapsuleShape2D_iuser")
+debug_color = Color(0.14902, 0.164706, 1, 0.419608)
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]

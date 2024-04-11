@@ -1,10 +1,17 @@
-[gd_scene load_steps=8 format=3 uid="uid://calcabggttnma"]
+[gd_scene load_steps=9 format=3 uid="uid://calcabggttnma"]
 
 [ext_resource type="Texture2D" uid="uid://dbge5xjbug17d" path="res://art/playerGrey_up1.png" id="1_1lgkm"]
 [ext_resource type="Script" path="res://player.gd" id="1_dp47n"]
 [ext_resource type="Texture2D" uid="uid://myqi7xa4sn6s" path="res://art/playerGrey_up2.png" id="2_6cm38"]
 [ext_resource type="Texture2D" uid="uid://tafsow4dvsin" path="res://art/playerGrey_walk1.png" id="3_ndle2"]
 [ext_resource type="Texture2D" uid="uid://s15fmido0bgb" path="res://art/playerGrey_walk2.png" id="4_ycre3"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_u5cn6"]
+radius = 26.0
+height = 74.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_kr7yr"]
+radius = 27.0
 
 [sub_resource type="SpriteFrames" id="SpriteFrames_ox7y7"]
 animations = [{
@@ -31,21 +38,22 @@ animations = [{
 "speed": 3.0
 }]
 
-[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_2ckrh"]
-radius = 27.0
-height = 68.0
-
-[node name="Player" type="Area2D"]
+[node name="Player" type="CharacterBody2D"]
+collision_mask = 2
 script = ExtResource("1_dp47n")
-metadata/_edit_group_ = true
+
+[node name="hitbox" type="Area2D" parent="."]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="hitbox"]
+shape = SubResource("CapsuleShape2D_u5cn6")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(0, -7)
+shape = SubResource("CircleShape2D_kr7yr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="."]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_ox7y7")
-animation = &"walk"
+animation = &"up"
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-visibility_layer = 0
-shape = SubResource("CapsuleShape2D_2ckrh")
-
-[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="body_entered" from="hitbox" to="." method="_on_hitbox_body_entered"]
