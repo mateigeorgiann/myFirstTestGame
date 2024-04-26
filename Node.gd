@@ -1,22 +1,29 @@
 extends Node
 
+
+
 @export var mob_scene: PackedScene
 @export var enemy_2_scene:PackedScene
 @export var bullet_scene:PackedScene
 
+var playerGroup
 var score
 var canAttack: bool =true
 var attackTimer: Timer
-# Called when the node enters the scene tree for the first time.
+
 func _ready():
-	var player = get_node("player")
+	var player = get_node("player") # if you can explain why i did this , cause node is Player not player
 	$Player.boost_changed.connect(_on_boost_changed)
+	playerGroup = get_tree().get_first_node_in_group("player")
+	#it might be confusing but im experimenting with different ways to connect variables, scenes, objects
+	#this way with get_tree() can help with modifyin that object from any scene ,where this function is created
 	
 func _on_boost_changed(new_boost: int):
 	$HUD/ProgressBar.value= new_boost
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta):
+	
 	
 	if Input.is_action_pressed("click") and canAttack == true :
 		canAttack = false
@@ -25,21 +32,31 @@ func _process(delta):
 		canAttack = true
 		$attackTimer.start(1.0)
 	#print("timer ",$attackTimer.)
-
+	#I think i should comment my code more because I keep forgetting i was already working on stuff
+	#and i think i have 2 implementations of allowing or not to shoot
 
 func game_over():
+	
 	$ScoreTimer.stop()
 	$MobTimer.stop()
 	$HUD.show_game_over()
 	$BackgroundMusic.stop()
 	$DeathSound.play()
 	canAttack=false
+	playerGroup.canBoost = false
+	playerGroup.boost = 0
 	#I dont understand why this is not deleting the enemies of the screen I tried a few other methods but I
 	#can't figure it out. I added the enemies to their group named "enemies"
 	get_tree().call_group("enemies","queue_free()")
 	
+	#deletes all enemies, clearing the screen
+	for enemies in get_tree().get_nodes_in_group("enemies"):
+		enemies.queue_free()
+
+	
 func new_game():
 	score=0
+	playerGroup.canBoost = true
 	$Player.start($StartPosition.position)
 	$StartTimer.start()
 	$HUD.update_score(score)
@@ -63,7 +80,7 @@ func _on_mob_timer_timeout():
 	#i know its not the perfect randomiser, i would use smth based on seed
 	#maybe rewrite some algorithm but for such a small game i dont think its needed
 	var randomValue = randi_range(0,100)
-	print(randomValue," ", score)
+	#print(randomValue," ", score)
 	
 	# Currently you start with the 2nd type of enemies ^^ :-)
 	# However this is a good idea.
@@ -107,15 +124,17 @@ func _on_mob_timer_timeout():
 #I did earlier with mob 2. After that its supposed to be given speed, but I didnt have time to fix all
 #the crashes.
 func _on_mouse_click():
-	
-	var bullet = bullet_scene.instantiate()
-	bullet.user = $Player
-	bullet.position = $Player.position
-	var mousePosition = get_viewport().get_mouse_position()
-	var direction = (mousePosition - bullet.position).normalized()
-	var rotation_angle = atan2(direction.y,direction.x)
-	bullet.rotation_degrees = rotation_angle * deg_to_rad(1.0)
-	bullet.linear_velocity = direction.normalized() * 500
-	add_child(bullet)
-	
+	if $Player.is_visible(): #player , the way i coded it is always present but not always visible so i thought
+		#about using it this way to prevent shooting randomly
+		
+		var bullet = bullet_scene.instantiate()
+		bullet.user = $Player
+		bullet.position = $Player.position
+		var mousePosition = get_viewport().get_mouse_position()
+		var direction = (mousePosition - bullet.position).normalized()
+		var rotation_angle = atan2(direction.y,direction.x)
+		bullet.rotation_degrees = rotation_angle * deg_to_rad(1.0)
+		bullet.linear_velocity = direction.normalized() * 500
+		add_child(bullet)
+
 

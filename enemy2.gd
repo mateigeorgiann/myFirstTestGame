@@ -23,7 +23,7 @@ const speedOfEnemyRushing = 500
 func _process(delta):
 	if _player != null:
 		if $TimerHoming.is_stopped() == false :
-			#var rotation_angle = atan2(direction.y, direction.x)
+		#var rotation_angle = atan2(direction.y, direction.x)
 		#rotation_degrees = rotation_angle * deg_to_rad(randi_range(0.1,45.0))
 		#linear_velocity = direction.normalized() * 600 
 		#spawn mob
@@ -40,7 +40,8 @@ func _process(delta):
 		else:
 			move_and_collide(direction * speedOfEnemyRushing * delta)
 
-#Kill enemy when bullet his it
+
+
 func _on_area_2d_body_entered(body):
-	if body is Bullet and body.user != self:
+	if body.is_in_group("walls"):
 		queue_free()

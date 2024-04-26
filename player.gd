@@ -3,11 +3,13 @@ class_name Player
 
 signal hit
 signal boost_changed(new_boost)
-@export var speed = 400 #how fast the player moves
+
 var screen_size #size of the game window
-const max_boost=100
 var boost=0
-# Called when the node enters the scene tree for the first time.
+var canBoost : bool = false
+@export var speed = 400 #how fast the player moves
+const max_boost=100
+
 func _ready():
 	screen_size = get_viewport_rect().size
 	hide()
@@ -19,6 +21,8 @@ func _process(delta):
 	# Technically, moving diagonally is now faster than moving in any single direction.
 	# While that was the behavior of some older games, it is a bit suspicious.
 	# Any idea why is that the case? 
+	
+	#yes because it adds velocity from both x and y , adding it up to 2 , which is obv bigger than 1.
 	if Input.is_action_pressed("move_right"):
 		velocity.x +=1
 	if Input.is_action_pressed("move_left"):
@@ -38,20 +42,23 @@ func _process(delta):
 	# a bit of reordering to make this slightly easier on the eyes.
 	# Also, you're currently recharding the booster before the game starts.
 	# What can you do about it?
-	if Input.is_action_pressed("boost_player"): #This is the boost function it
-		boost= boost - 20 * delta              #the implementation might not be optimum but this is the 1st
-		if boost > 0 :                       #easy solution that came to mind
-			speed=800
-		else :
+	
+	if(canBoost == true):
+		if (Input.is_action_pressed("boost_player") ): #This is the boost function it
+			boost= boost - 20 * delta              #the implementation might not be optimum but this is the 1st
+			if boost > 0 :                       #easy solution that came to mind
+				speed=800
+			else :
+				speed=400
+		else: 
+			if boost < max_boost:
+				boost=boost+ 8 * delta
 			speed=400
-	else: 
-		if boost < max_boost:
-			boost=boost+ 8 * delta
-		speed=400
+			
+		# you basically want to update the boost every frame. 
+		# (except for when its full, but we don't need to overoptimize rn.)
+		emit_signal("boost_changed",boost)
 		
-	# you basically want to update the boost every frame. 
-	# (except for when its full, but we don't need to overoptimize rn.)
-	emit_signal("boost_changed",boost)
 	#im trying to update the progress bar
 	
 	#Yup, animations are a bitch.
@@ -68,7 +75,7 @@ func _process(delta):
 		$AnimatedSprite2D.animation = "up"
 		$AnimatedSprite2D.flip_v = velocity.y > 0
 	move_and_collide(velocity * delta)
-	
+	#print(velocity)
 
 func start(pos):
 	position = pos
@@ -85,6 +92,7 @@ func _on_hitbox_body_entered(body):
 	# item spawned randomy
 	if body is Enemy or body is Enemy2:
 		hide()
+		#queue_free()
 		hit.emit()
 		$CollisionShape2D.set_deferred("disabled",true)
 		

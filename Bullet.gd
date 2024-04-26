@@ -1,6 +1,8 @@
 extends RigidBody2D
 class_name Bullet
+
 signal kill
+
 var user
 
 func _process(delta):
@@ -9,9 +11,13 @@ func _process(delta):
 #or to see if i can connect with $ in the node scene .
 #Also I will have to fix the warning idk what it means
 
-
+#now bullet checks for enemies inside itself and kills both the enemy ( which are now part of a group ) and
+#the bullet itself.
 func _on_area_2d_body_entered(body):
-	if ( body == Enemy or body == Enemy2 ) and body.user != self:
-		#i dont understand why it doesnt enter the the if , i tried to do the coin thing and theoretically 
-		#it should have worked , im gonna try next week maybe it will work.
+	if body.is_in_group("enemies"):
 		queue_free()
+		body.queue_free()
+	#kills the bullet if it hits a wall
+	elif body.is_in_group("walls"):
+		queue_free()
+		print("BULLET KILLED")
